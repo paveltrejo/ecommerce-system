@@ -18,42 +18,71 @@ def get_all_product(db, is_active):
     return rows
 
 
-def get_product_by_id(db, product_id: int):
+def get_all_product_by_seller(db, is_active, seller_id: int):
+    """
+    Permite consultar a un producto en particular.
+
+    Recibe: Id del Seller
+    Regresa: Los productos pertenecientes al seller
+    """
+    return (
+        db.query(Product)
+        .filter(and_(
+            Product.owner_id == seller_id,
+            Product.is_active == is_active
+        )
+        )
+        .all()
+    )
+
+
+def get_product_by_id(db, product_id: int, seller_id: int):
     """
     Permite consultar a un producto en particular.
 
     Recibe: Id del producto
     Regresa: El producto con el id ingresado
     """
-    return (
+    product = (
+        db.query(Product)
+        .filter(and_(
+            Product.id == product_id,
+            Product.owner_id == seller_id
+        ))
+        .first()
+    )
+
+    return product
+
+def get_product_id(db, product_id: int):
+    """
+    Permite consultar a un producto en particular.
+
+    Recibe: Id del producto
+    Regresa: El producto con el id ingresado
+    """
+    product = (
         db.query(Product)
         .filter_by(
-            id=product_id,
+            id = product_id
         )
         .first()
     )
 
-
-def get_product_by_email(db, product_email: str):
-    """
-    Recibe un email del producto 
-    Regresa al producto asociado con dicho email en caso de existir uno
-    """
-    return (
-        db.query(Product)
-        .filter_by(
-            email=product_email
-        )
-        .first()
-    )
+    return product
 
 
-def create_new_product(db, new_product: ProductCreate):
+def create_new_product(db, new_product: ProductCreate, user_id: int):
     "Función para crear un producto"
     db_product = None
     try:
-        db_product = Product(**new_product.dict()
-            )
+        db_product = Product(owner_id=user_id,
+                             name=new_product.name,
+                             description=new_product.description,
+                             price=new_product.price,
+                             is_active=new_product.is_active,
+                             created_at=new_product.created_at
+                             )
         db.add(db_product)
         db.commit()
         db.refresh(db_product)
@@ -68,18 +97,31 @@ def create_new_product(db, new_product: ProductCreate):
     return db_product
 
 
-def update_product_by_id(db, product_id: int, modify_product: ProductModify):
-    rows_updated = (
-        db.query(Product)
-        .filter_by(id=product_id)
-        .update(modify_product, synchronize_session="fetch")
-    )
-    db.commit()
-    return rows_updated
+def update_product_by_id(db, product_id: int, modify_product: ProductModify, user_id:int):
+    
+    product = get_product_by_id(db, product_id, user_id)
+    print("#####################################")
+    print(product)
+    if product:
+        rows_updated = (
+            db.query(Product)
+            .filter_by(id=product_id)
+            .update(modify_product, synchronize_session="fetch")
+        )
+        db.commit()
+        return rows_updated
+    else: 
+        print("Si entre")
+        return 403
 
 
-def delete_product(db: Session, product_id: int):
-    product = db.query(Product).filter(Product.id == product_id).first()
-    db.delete(product)
-    db.commit()
-    return {"status": True}
+def delete_product(db: Session, product_id: int, user_id:int):
+    
+    product = get_product_by_id(db, product_id, user_id)
+    if product:
+        product = db.query(Product).filter(Product.id == product_id).first()
+        db.delete(product)
+        db.commit()
+        return "Registro eliminado correctamente"
+    else: 
+        return "No tienes acceso a borrar este registro "

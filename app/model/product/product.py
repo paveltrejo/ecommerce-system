@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from pydantic import BaseModel
 from utils.db import Base
 
-#Modelo para el usuario
+#Modelo para el producto
 class Product(Base):
     __tablename__ = "product"
     id = Column(Integer, primary_key=True, index=True,)

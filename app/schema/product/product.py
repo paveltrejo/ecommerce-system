@@ -18,9 +18,6 @@ class ProductCreate(BaseModel):
         max_lenght= 520
     )
     price: condecimal(decimal_places= 2)
-    owner_id: int = Field(
-        title="Seller del producto"
-    )
     is_active: boolean = Field(
         title = "Activo"
     )

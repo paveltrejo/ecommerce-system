@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 
 from crud.product.product import (
-    get_all_product,
+    get_all_product_by_seller,
     get_product_by_id,
     update_product_by_id,
     create_new_product,
@@ -15,8 +15,10 @@ from schema.product.product import (
     ProductModify
 )
 from model.product.product import Product
+from model.user.user import User
 
 from utils.db import SessionLocal
+from utils.functions_jwt import get_current_active_user
 
 
 seller_routes = APIRouter()
@@ -29,66 +31,81 @@ def get_db():
     finally:
         db.close()
 
+
 # Ruta para traer a todos los productos del seller
-
-
 @seller_routes.get("/api/v1/seller/products/", tags=["Sellers"])
-def get_product(is_active: bool = True, db: Session = Depends(get_db)):
+def get_product(response: Response, is_active: bool = True, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "get_all_products"
-
-    list_product = get_all_product(db, is_active)
-    return {"data": list_product}
+    if 'Seller' in current_user.role:
+        list_product = get_all_product_by_seller(db, is_active, current_user.id)
+        return {"data": list_product}
+    else:
+        response.status_code = 403
+        return {"message": "No tienes acceso a esta información"}
 
 # Ruta para traer a un usuario por su id
 
 
-@seller_routes.get("/api/v1/products/{product_id}", tags=["Products"])
-def get_product_by__id(product_id: str, db: Session = Depends(get_db)):
+@seller_routes.get("/api/v1/products/{product_id}", tags=["Sellers"])
+def get_product_by__id(response: Response, product_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "get_product_by_id"
-
-    product = get_product_by_id(db, product_id)
-    return {"data": product}
+    
+    if 'Seller' in current_user.role:
+        product = get_product_by_id(db, product_id, current_user.id)
+        return {"data": product}
+    else:
+        response.status_code = 403
+        return {"message": "No tienes acceso a esta información"}
 
 # Ruta para crear un nuevo usuario
 
 
-@seller_routes.post("/api/v1/products/", tags=["Products"])
-def create_product(new_product: ProductCreate, response: Response, db: Session = Depends(get_db)):
+@seller_routes.post("/api/v1/products/", tags=["Sellers"])
+def create_product(response: Response, new_product: ProductCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "create_new_product"
 
-    
-    product = create_new_product(db, new_product)
-    if product is not None:
-        return {"message": "Exitoso", "data": product}
+    if 'Seller' in current_user.role:
+        product = create_new_product(db, new_product, current_user.id)
+        if product is not None:
+            return {"message": "Exitoso", "data": product}
+        else:
+            response.status_code = 401
+            return {"message": "No se pudo guardar en la BD", "data": product}
     else:
-        response.status_code = 401
-        return {"message": "No se pudo guardar en la BD", "data": product}
+        response.status_code = 403
+        return {"message": "No tienes acceso a esta información"}
 
 # Ruta para actualizar a un nuevo usuario por medio de su id
 
 
-@seller_routes.patch("/api/v1/products/{product_id}", tags=["Products"])
-def update_product(product_id: str, modify_product: ProductModify, response: Response, db: Session = Depends(get_db)):
+@seller_routes.patch("/api/v1/products/{product_id}", tags=["Sellers"])
+def update_product(response: Response, product_id: str, modify_product: ProductModify, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "update_product_by_id"
+    if 'Seller' in current_user.role:
+        update_data = modify_product.dict(exclude_unset=True)
+        product_update_result = update_product_by_id(db, product_id, update_data, current_user.id)
 
-    update_data = modify_product.dict(exclude_unset=True)
-    product_update_result = update_product_by_id(db, product_id, update_data)
-
-    if product_update_result != 0:
-        exist_product = get_product_by_id(db, product_id)
-        return {"mensaje": "Actualizado Correctamente", "data": exist_product}
+        if product_update_result != 403 :
+            exist_product = get_product_by_id(db, product_id, current_user.id)
+            return {"mensaje": "Actualizado Correctamente", "data": exist_product}
+        else:
+            response.status_code = 403
+            return {"message": "No tienes acceso a esta información"}   
     else:
-        response.status_code = 401
-        return {"mensaje": "Ningun registro fue afectado", "data": ""}
+        response.status_code = 403
+        return {"message": "No tienes acceso a esta información"}
+   
 
 # Ruta para borrar un usuario por medio de su id
 
 
-@seller_routes.delete("/api/v1/delete/products/{product_id}", tags=["Products"])
-def delete_product_by_id(product_id: int, db: Session = Depends(get_db)):
+@seller_routes.delete("/api/v1/delete/products/{product_id}", tags=["Sellers"])
+def delete_product_by_id(response: Response, product_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "delete_product_by_id"
-
-    status = delete_product(db, product_id)
-    return {"message": status}
-
+    if 'Seller' in current_user.role:
+        status = delete_product(db, product_id, current_user.id)
+        return {"message": status}
+    else:
+        response.status_code = 403
+        return {"message": "No tienes acceso a esta información"}
 

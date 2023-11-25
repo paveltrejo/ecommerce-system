@@ -10,15 +10,15 @@ from utils.db import Base
 class OrderStatus(str, Enum):
     approval = "Aprobación"
     rejection = "Rechazo"
-    scheduling_arrival = "En entrega"
-    on_recovery =  "En recuperación"
+    scheduling_arrival = "En entrega"   
 
 #Modelo para el usuario
 class Order(Base):
     __tablename__ = "order"
     id = Column(Integer, primary_key=True, index=True,)
-    owner_id = Column(ForeignKey("user.id"), nullable=True,  doc='Seller propietario')
-    role = Column(String, default=OrderStatus.approval.value)
+    buyer_id = Column(ForeignKey("user.id"), nullable=True,  doc='Seller propietario')
+    status = Column(String, default=OrderStatus.approval.value)
+    total_amount= Column(Float(20))
     eta = Column(DateTime(timezone=True), nullable=True)
     
     is_active = Column(Boolean, default=True)
