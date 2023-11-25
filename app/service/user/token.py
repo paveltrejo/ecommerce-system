@@ -11,6 +11,8 @@ from utils.db import SessionLocal
 from utils.functions_jwt import validate_token, create_access_token, generate_new_tokens
 from utils.hash import verify_str_hash
 
+from fastapi.security import OAuth2PasswordRequestForm
+
 SECRET_KEY = "39d87423287d550c71e16d02fa7c4a522752a20bed9c505740b13aceeab5bf8a"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -40,7 +42,7 @@ def authenticate_user(db, username: str, password: str):
 
 @token_routes.post("/api/v1/users/login/", response_model=Token, tags=["Users"])
 async def login_for_access_token(
-    db: Session = Depends(get_db), form_data: TokenCreate = Depends()
+    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
     """
     Status de login:

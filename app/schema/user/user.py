@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, EmailStr
 class UserCreate(BaseModel):
    
     email: EmailStr = Field(
-        title= "Nombre del metodo de pago",
+        title= "Correo del usuario",
         max_lenght= 50
     )
     hashed_pass:str = Field (
@@ -28,7 +28,7 @@ class UserCreate(BaseModel):
 class UserModify(BaseModel):
     
     email: EmailStr = Field(
-        title= "Nombre del metodo de pago",
+        title= "Correo del usuario",
         max_lenght= 50
     )
     hashed_pass:str = Field (
