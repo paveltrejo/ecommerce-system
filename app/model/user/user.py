@@ -6,6 +6,12 @@ from sqlalchemy.dialects.postgresql import UUID
 from pydantic import BaseModel
 from utils.db import Base
 
+#Clase para definir los roles que pueden darse de alta
+class UserRoleSignUp(str, Enum):
+    seller = "Seller"
+    buyer = "Buyer"
+
+
 #Clase para definir los roles
 class UserRole(str, Enum):
     anonymous = "Anonymous"
@@ -13,7 +19,8 @@ class UserRole(str, Enum):
     admin_plat_us = "Admin Platform User Roles"
     admin =  "Admin"
     financial = "Financial"
-    logistics = "Logistics"
+    logistic = "Logistic"
+    buyer = "Buyer"
 
 #Modelo para el usuario
 class User(Base):
