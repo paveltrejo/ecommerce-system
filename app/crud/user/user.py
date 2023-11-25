@@ -2,6 +2,7 @@ from sqlalchemy import case, and_
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from utils.db import db_mapping_rows_to_dict
+from utils.hash import hash_str
 from datetime import date
 
 from model.user.user import User, UserRole
@@ -31,12 +32,13 @@ def get_user_by_id(db, user_id: int):
         .first()
     )
 
+
 def get_user_by_email(db, user_email: str):
     """
     Recibe un email del usuario 
     Regresa al usuario asociado con dicho email en caso de existir uno
     """
-    return(
+    return (
         db.query(User)
         .filter_by(
             email=user_email
@@ -45,12 +47,17 @@ def get_user_by_email(db, user_email: str):
     )
 
 
-
 def create_new_user(db, new_user: UserCreate, user_role: UserRole):
     "Función para crear un usuario"
     db_user = None
     try:
-        db_user = User(**new_user.dict(), role = user_role)
+        db_user = User(
+            email = new_user.email, 
+            hashed_pass=hash_str(new_user.hashed_pass),  
+            is_active = new_user.is_active,
+            created_at =new_user.created_at,
+            role=user_role
+            )
         db.add(db_user)
         db.commit()
         db.refresh(db_user)
