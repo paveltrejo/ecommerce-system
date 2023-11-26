@@ -79,6 +79,7 @@ Para ejecutar el test solo se necesita ejecutar la ruta /api/v1/test/ dentro de 
 
 
 ### Estructura de la base de datos
-    
+
+![Modelo entidad relacion!](/base_de_datos.png "Modelo entidad relacion")
 
  
