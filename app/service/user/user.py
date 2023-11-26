@@ -32,8 +32,6 @@ def get_db():
 
 
 # Ruta para crear un nuevo usuario
-
-
 @user_routes.post("/api/v1/users/sign_up/", tags=["Users"])
 def create_user(user_role: UserRoleSignUp, new_user: UserCreate, response: Response, db: Session = Depends(get_db)):
     NAME = "create_new_user"
@@ -44,10 +42,10 @@ def create_user(user_role: UserRoleSignUp, new_user: UserCreate, response: Respo
         response.status_code = 401
         return {"message": "El correo ya esta registrado en el sistema. Utiliza uno nuevo"}
 
-    #email_status = email_verification(new_user.email)
-    #if email_status['is_free_email']['value'] is False:
-    #    response.status_code = 403
-    #    return{"message": "El correo se encuentra en la lista negra de correos"}
+    email_status = email_verification(new_user.email)
+    if email_status['is_free_email']['value'] is False:
+        response.status_code = 403
+        return{"message": "El correo se encuentra en la lista negra de correos"}
 
     user = create_new_user(db, new_user, user_role)
     if user is not None:
@@ -56,7 +54,7 @@ def create_user(user_role: UserRoleSignUp, new_user: UserCreate, response: Respo
         response.status_code = 401
         return {"message": "No se pudo guardar en la BD", "data": user}
 
-# Ruta para actualizar a un nuevo usuario por medio de su id
+
 
 
 

@@ -43,9 +43,8 @@ def get_product(response: Response, is_active: bool = True, db: Session = Depend
         response.status_code = 403
         return {"message": "No tienes acceso a esta información"}
 
-# Ruta para traer a un usuario por su id
 
-
+# Ruta para traer a un producto por su id
 @seller_routes.get("/api/v1/products/{product_id}", tags=["Sellers"])
 def get_product_by__id(response: Response, product_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "get_product_by_id"
@@ -57,9 +56,8 @@ def get_product_by__id(response: Response, product_id: str, db: Session = Depend
         response.status_code = 403
         return {"message": "No tienes acceso a esta información"}
 
-# Ruta para crear un nuevo usuario
 
-
+# Ruta para crear un nuevo producto
 @seller_routes.post("/api/v1/products/", tags=["Sellers"])
 def create_product(response: Response, new_product: ProductCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "create_new_product"
@@ -75,9 +73,8 @@ def create_product(response: Response, new_product: ProductCreate, db: Session =
         response.status_code = 403
         return {"message": "No tienes acceso a esta información"}
 
-# Ruta para actualizar a un nuevo usuario por medio de su id
 
-
+# Ruta para actualizar a un nuevo producto por medio de su id
 @seller_routes.patch("/api/v1/products/{product_id}", tags=["Sellers"])
 def update_product(response: Response, product_id: str, modify_product: ProductModify, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "update_product_by_id"
@@ -96,9 +93,8 @@ def update_product(response: Response, product_id: str, modify_product: ProductM
         return {"message": "No tienes acceso a esta información"}
    
 
-# Ruta para borrar un usuario por medio de su id
 
-
+# Ruta para borrar un producto por medio de su id
 @seller_routes.delete("/api/v1/delete/products/{product_id}", tags=["Sellers"])
 def delete_product_by_id(response: Response, product_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)):
     NAME = "delete_product_by_id"
