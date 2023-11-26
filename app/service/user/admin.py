@@ -11,6 +11,7 @@ from crud.user.user import (
     create_new_user,
     delete_user
 )
+from crud.product.product import get_product_log_by_id
 from schema.user.user import (
     UserCreate,
     UserModify
@@ -143,3 +144,28 @@ def delete_user_by_id(
     else:
         response.status_code = 403
         return {"message": "No tienes acceso a esta información"}
+
+
+@admin_routes.get("/api/v1/admin/products/log/{product_id}", tags=["Admin"])
+def get_user_by__id(
+        response: Response,
+        product_id: str,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_active_user)):
+    NAME = "get_product_log_by_id"
+    if 'Admin' in current_user.role:
+        product_log = get_product_log_by_id(db, product_id)
+        return {"data": product_log}
+    else:
+        response.status_code = 403
+        return {"message": "No tienes acceso a esta información"}
+# Ruta para crear un nuevo usuario
+
+
+
+
+
+
+
+
+
