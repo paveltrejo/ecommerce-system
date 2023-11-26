@@ -8,11 +8,12 @@ Mas adelante se daran detalles de las funcionalidades que presenta.
 ## Primeros Pasos
 
 1. Descargar el repositorio de forma local
-2. Si no se tiene instalado docker instalar docker compose. 
+2. Crear una carpeta llamada versions/ en la ruta app/alembic/ es importante que la carpeta este creada y vacia antes de realizar el siguiente paso
+3. Si no se tiene instalado docker instalar docker compose. 
   https://docs.docker.com/desktop/install/linux-install/
-3. En la carpeta de origen del repositorio correr 'docker-compose up'
-4. Entrar a la url http://0.0.0.0:8000/docs dentro de su navegador para visualizar la documentación de fastapi.
-5. Ejecutar la ruta /api/v1/create/data/db/ en la seccion "db". Esto creara los siguientes usuarios y productos, permitiendo usar el sistema.
+4. En la carpeta de origen del repositorio correr 'docker-compose up'
+5. Entrar a la url http://0.0.0.0:8000/docs dentro de su navegador para visualizar la documentación de fastapi.
+6. Ejecutar la ruta /api/v1/create/data/db/ en la seccion "db". Esto creara los siguientes usuarios y productos, permitiendo usar el sistema.
 
 ### usuarios
     buyer_user = 
