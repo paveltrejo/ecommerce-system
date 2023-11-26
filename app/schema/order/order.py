@@ -43,3 +43,24 @@ class OrderProductCreate(BaseModel):
 
     order: OrderCreate
     products_id: Optional[list[int]]
+
+class OrderComplete(BaseModel):
+    
+    buyer_id: int = Field(
+        title="Comprador"
+    )
+    eta: datetime = Field(
+        title="Fecha de entrega aproximada"        
+    ) 
+    status: str = Field(
+        title = "Estado de la orden"
+    )
+
+    total_amount: condecimal(decimal_places= 2)
+
+    is_active: boolean = Field(
+        title = "Activo"
+    )
+    created_at:Optional[datetime] = Field(
+        default=datetime.now()
+    )

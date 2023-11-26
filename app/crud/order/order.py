@@ -5,10 +5,10 @@ from utils.db import db_mapping_rows_to_dict
 from utils.hash import hash_str
 from datetime import date, datetime
 
-from model.order.order import Order, OrderStatus
+from model.order.order import Order, OrderStatus, OrderLog
 from model.order.order_product import OrderProduct
 from model.product.product import Product
-from schema.order.order import OrderCreate, OrderModify, OrderProductCreate
+from schema.order.order import OrderCreate, OrderModify, OrderProductCreate, OrderComplete
 from crud.product.product import get_product_id
 
 def get_all_order(db, is_active:bool =True):
@@ -47,6 +47,34 @@ def create_new_order(db, new_order: OrderProductCreate, status_order: str):
         print(f"No se pudo guardar en la base de datos: {ex}")
     return db_order
 
+def create_new_order_log(db, order_id:int):
+    order = get_order_by_id(db, order_id)
+
+    order_create = OrderComplete(
+        buyer_id = order.buyer_id,
+        eta = order.eta,
+        status = order.status,
+        total_amount = order.total_amount,
+        is_active = order.is_active
+
+    )    
+    
+    db_order = None
+    try:
+        db_order = OrderLog(**order_create.dict(), order_id=order_id)
+        db.add(db_order)
+        db.commit()
+        db.refresh(db_order)
+
+    except SQLAlchemyError as e:
+        print("#=================")
+        print(e)
+        print("#=================")
+        db_order = None
+        return db_order
+    except Exception as ex:
+        print(f"No se pudo guardar en la base de datos: {ex}")
+    return db_order
 
 def get_order_by_id(db, order_id: int):
     """
@@ -87,11 +115,15 @@ def get_order_products_by_order_id(db, order_id: int):
 
 def update_order_by_id(db, order_id: int, modify_order: OrderModify):
 
-    rows_updated = (
-        db.query(Order)
-        .filter_by(id=order_id)
-        .update(modify_order, synchronize_session="fetch")
-    )
+    order = get_order_by_id(db, order_id)
+
+    order_log = create_new_order_log(db, order_id)
+    if order:
+        rows_updated = (
+            db.query(Order)
+            .filter_by(id=order_id)
+            .update(modify_order, synchronize_session="fetch")
+        )
     db.commit()
     return rows_updated
 
@@ -108,6 +140,7 @@ def change_status_order_by_id(db, order_id: int, status: int):
     - Devuelve:
        row_update: Status 1 si la actualización fue exitosa
     """
+    status_log = create_new_order_log(db, order_id)
     if status == 1:
         new_status = OrderStatus.approval.value
     elif status == 2:
@@ -130,7 +163,7 @@ def change_eta_order_by_id(db, order_id:int, eta: datetime):
     - Recibe: La fecha de eta y el id de la orden
     - Regresa: Status 1 si la actualización fue exitosa
     """
-
+    status_log = create_new_order_log(db, order_id)
     row_update = (
         db.query(Order)
         .filter_by(id=order_id)
@@ -156,3 +189,19 @@ def delete_order(db: Session, order_id: int):
         return "Registro eliminado correctamente"
     else:
         return "No tienes acceso a borrar este registro "
+
+
+def get_order_log_by_id(db: Session, order_id:int):
+    
+    actual_order = db.query(Order).filter(Order.id == order_id).first()
+    order_log = (
+        db.query(OrderLog)
+        .filter(OrderLog.order_id==order_id)
+        .all()
+    )
+
+    return {
+        "actual_order": actual_order,
+        "order_log": order_log
+    }
+

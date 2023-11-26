@@ -12,6 +12,7 @@ from crud.user.user import (
     delete_user
 )
 from crud.product.product import get_product_log_by_id
+from crud.order.order import get_order_log_by_id
 from schema.user.user import (
     UserCreate,
     UserModify
@@ -147,7 +148,7 @@ def delete_user_by_id(
 
 
 @admin_routes.get("/api/v1/admin/products/log/{product_id}", tags=["Admin"])
-def get_user_by__id(
+def get_product_log(
         response: Response,
         product_id: str,
         db: Session = Depends(get_db),
@@ -159,7 +160,23 @@ def get_user_by__id(
     else:
         response.status_code = 403
         return {"message": "No tienes acceso a esta información"}
-# Ruta para crear un nuevo usuario
+
+@admin_routes.get("/api/v1/admin/orders/log/{order_id}", tags=["Admin"])
+def get_order_log(
+        response: Response,
+        order_id: str,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_active_user)):
+    NAME = "get_product_log_by_id"
+    if 'Admin' in current_user.role:
+        order_log = get_order_log_by_id(db, order_id)
+        return {"data": order_log}
+    else:
+        response.status_code = 403
+        return {"message": "No tienes acceso a esta información"}
+
+
+
 
 
 
