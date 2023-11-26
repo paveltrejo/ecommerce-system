@@ -73,6 +73,13 @@ def get_product_id(db, product_id: int):
 
     return product
 
+def get_order_products_by_product_id(db, product_id: int):
+    order_products = (
+        db.query(OrderProduct)
+        .filter(OrderProduct.product_id == product_id)
+        .all()
+    )
+    return order_products
 
 def create_new_prdouct_log(db, new_product_log:ProductCreate, product_id:int):
     db_product_log = None
@@ -145,6 +152,10 @@ def update_product_by_id(db, product_id: int, modify_product: ProductModify, use
 
 
 def delete_product(db: Session, product_id: int, user_id: int):
+    orders_product = get_order_products_by_product_id(db, product_id)
+    for order_product in orders_product:
+        db.delete(order_product)
+        db.commit()
 
     product = get_product_by_id(db, product_id, user_id)
     if product:
