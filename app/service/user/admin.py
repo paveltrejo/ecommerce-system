@@ -22,6 +22,8 @@ from model.user.user import UserRole, UserRoleSignUp, User
 from utils.db import SessionLocal
 from utils.email_validation import email_verification
 from utils.functions_jwt import get_current_active_user
+from utils.create_data import create_data_db
+from utils.test import test
 
 admin_routes = APIRouter()
 
@@ -175,14 +177,13 @@ def get_order_log(
         response.status_code = 403
         return {"message": "No tienes acceso a esta información"}
 
+@admin_routes.get("/api/v1/create/data/db/", tags=["db"])
+def create_data_in_db(db: Session = Depends(get_db)):
+    status = create_data_db(db)
+    return status
 
 
-
-
-
-
-
-
-
-
-
+@admin_routes.get("/api/v1/test/", tags=["Test"])
+def create_data_in_db(db: Session = Depends(get_db)):
+    status = test(db)
+    return status
