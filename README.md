@@ -78,8 +78,15 @@ Mas adelante se daran detalles de las funcionalidades que presenta.
 Para ejecutar el test solo se necesita ejecutar la ruta /api/v1/test/ dentro de la sección test. Si se quiere ver el avance de cada sección se puede consultar la consola.
 
 
-### Estructura de la base de datos
+## Estructura de la base de datos
 
 ![Modelo entidad relacion!](/base_de_datos.png "Modelo entidad relacion")
 
- 
+
+
+
+
+
+
+
+
