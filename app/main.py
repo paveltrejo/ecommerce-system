@@ -6,6 +6,7 @@ from service.product.product import product_routes
 from service.user.seller import seller_routes
 from service.user.logistic import logistics_routes
 from service.user.finantial import finantial_routes
+from route.user import admin_routes_changes
 app = FastAPI()
 
 app.include_router(user_routes)
@@ -15,7 +16,7 @@ app.include_router(seller_routes)
 app.include_router(product_routes)
 app.include_router(logistics_routes)
 app.include_router(finantial_routes)
-
+app.include_router(admin_routes_changes)
 
 @app.post("/", )
 def root_test():
