@@ -1,0 +1,1 @@
+# Repositories within the domain layer are interfaces that abstract the retrieval of domain objects from data stores. They define the methods needed to query and persist domain entities. For example, an 'OrderRepository' might declare methods like 'find_by_id' and 'save' which would be implemented in the infrastructure layer.

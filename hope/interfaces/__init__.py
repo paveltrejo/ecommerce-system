@@ -1,0 +1,1 @@
+# The interfaces layer defines the contracts for how external entities interact with the application. This includes RESTful APIs, GraphQL endpoints, and CLI interfaces. They are adapters that translate between the application's internal domain models and the external representation of data.

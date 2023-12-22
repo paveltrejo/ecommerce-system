@@ -1,0 +1,1 @@
+# The domain layer is the heart of the business logic. It encapsulates the business rules, models, and exceptions that define the operations and constraints of the business domain. For instance, a 'User' model would be defined here with methods for verifying passwords and updating user details.

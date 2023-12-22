@@ -1,0 +1,1 @@
+# Routes within the API REST package define the endpoints available to clients and handle the incoming requests. They call upon the application services to perform actions and return responses. A route such as '/users/{id}' would be defined here to handle user-related operations.

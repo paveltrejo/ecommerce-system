@@ -1,0 +1,1 @@
+# The cache package includes classes and configurations for caching mechanisms to improve performance. For example, it might contain a 'RedisCacheAdapter' that uses Redis to cache common queries or results.

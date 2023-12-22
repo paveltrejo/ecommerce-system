@@ -1,0 +1,1 @@
+# Adapters in the infrastructure layer serve as the bridge between the application and the external services or databases. They implement the interfaces defined in the domain layer to provide concrete functionality. For instance, an adapter could implement the 'IEmailService' interface using a third-party email service provider.

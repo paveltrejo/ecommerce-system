@@ -1,0 +1,1 @@
+# This package contains all the components needed to build a RESTful API interface. It defines route handlers, request/response schemas, and the necessary configuration to expose the API to clients.

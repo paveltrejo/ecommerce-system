@@ -1,0 +1,1 @@
+# Domain services contain additional logic that doesn’t fit within a domain model. This includes complex business rules or processes that span multiple domain models. For example, a 'PaymentProcessingService' could coordinate between 'Order', 'Payment', and 'Notification' models to process a user's payment.

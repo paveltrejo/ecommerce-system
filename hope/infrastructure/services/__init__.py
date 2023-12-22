@@ -1,0 +1,1 @@
+# The services package within the infrastructure layer contains implementations of services like message queuing, file storage, and third-party clients. For example, an 'S3StorageService' would provide methods to save and retrieve files from AWS S3.

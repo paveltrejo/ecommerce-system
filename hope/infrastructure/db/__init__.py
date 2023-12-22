@@ -1,0 +1,1 @@
+# This package is dedicated to database configurations, connection management, and migrations. It contains the setup needed to connect to a SQL or NoSQL database and might include scripts or tools like Alembic to handle database versioning and migrations.

@@ -1,0 +1,1 @@
+# API REST Models are the schemas that represent how data is sent and received over the API. They define the structure of request bodies and response payloads. For example, a 'UserRequestModel' might define the expected fields when creating a new user.

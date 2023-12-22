@@ -1,0 +1,1 @@
+# This package contains custom exceptions that are specific to the domain logic. These exceptions handle cases that are outside the normal flow of the application, such as 'ProductNotFoundException' or 'PaymentDeclinedException', which are thrown when a product cannot be found in the catalog or when a user's payment method is declined.
